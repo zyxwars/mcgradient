@@ -27,3 +27,13 @@ export function getSimiliarBlocks(block: Block, maxDistance: number) {
     (b) => labEucldieanDist(block.lab, b.lab) < maxDistance
   );
 }
+
+export function prettifyName(name: string) {
+  const parts = name.split("_");
+
+  for (let i = 0; i < parts.length; i++) {
+    parts[i] = parts[i].charAt(0).toUpperCase() + parts[i].slice(1);
+  }
+
+  return parts.join(" ");
+}

@@ -4,6 +4,7 @@ import {
   allBlocks,
   getBlockByName,
   getSimiliarBlocks,
+  prettifyName,
 } from "./lib/blocks";
 
 function App() {
@@ -51,8 +52,14 @@ function App() {
       <div
         key={b.fileName}
         className="w-20 aspect-square object-contain flex-shrink-0 flex-grow-0"
-        onMouseEnter={() => setHoveringOverBlock(b)}
-        onClick={() => setSelectedBlock(b)}
+        onMouseEnter={() => {
+          setHoveringOverBlock(b);
+        }}
+        onClick={() => {
+          // use for adding to blacklist fast
+          // console.log(b.name);
+          setSelectedBlock(b);
+        }}
       >
         <img
           className={`pixelated w-full h-full`}
@@ -65,25 +72,13 @@ function App() {
 
   return (
     <div className="h-screen flex-col flex">
-      {/* Header */}
-      <div className="border-b border-slate-300 flex bg-white p-4 shadow-sm justify-between bg-gradient-to-r">
-        <input
-          value={searchedBlockName}
-          onChange={(e) => {
-            setSearchedBlockName(e.target.value);
-          }}
-          className="px-2 py-2"
-          placeholder="Search block..."
-          onFocus={() => setIsSearching(true)}
-        />
-      </div>
-
       {/* Selected block */}
       {selectedBlock && (
         <div className="flex-shrink-0 flex justify-center items-center gap-4 my-4">
           <div
             className="w-20 aspect-square object-contain flex-shrink-0 flex-grow-0"
-            // on:mouseenter={() => setHoveringOverBlock(currentBlock)}
+            onMouseEnter={() => setHoveringOverBlock(selectedBlock)}
+            onClick={() => setIsSearching(true)}
           >
             <img
               className={`pixelated w-full h-full`}
@@ -93,7 +88,7 @@ function App() {
           </div>
 
           <div className="flex flex-col justify-center items-center">
-            <div className="flex justify-between gap-4">
+            <div className="flex justify-between gap-4 text-slate-400 text-xl">
               Similiarity
               <div>{maxColorDistance}</div>
               <input
@@ -131,10 +126,16 @@ function App() {
 
       {/* Search */}
       {isSearching && (
-        <div className="absolute top-20 left-0 right-0 bottom-0 p-4 pt-0 bg-white flex flex-col">
-          <div className="p-4 flex justify-between items-center flex-shrink-0">
-            <div className="text-slate-400 text-xl">Search results</div>
-            <div className="text-slate-400 text-xl">X</div>
+        <div className="absolute top-0 left-0 right-0 bottom-0 p-4 bg-white flex flex-col">
+          <div className="flex-shrink-0 flex justify-center pb-4">
+            <input
+              value={searchedBlockName}
+              onChange={(e) => {
+                setSearchedBlockName(e.target.value);
+              }}
+              className="p-2 text-2xl border-b-2 border-slate-300"
+              placeholder="Search block..."
+            />
           </div>
 
           <div className="overflow-y-scroll h-full">
@@ -142,6 +143,19 @@ function App() {
               {showSearchResults()}
             </div>
           </div>
+
+          <button
+            onClick={() => setIsSearching(false)}
+            className="absolute top-4 right-4 text-slate-400"
+          >
+            <span className="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      )}
+
+      {hoveringOverBlock && (
+        <div className="absolute top-0 left-0 bg-neutral-400 text-white font-semibold py-1 px-2">
+          {prettifyName(hoveringOverBlock.name)}
         </div>
       )}
     </div>
